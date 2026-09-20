@@ -9,8 +9,6 @@ image-version: stable
 modules:
   # 1. Garante que os scripts, ujust e ferramentas do Bluefin estão ativos
   - type: files
-    files:
-      - usr: /usr
 
   # 2. Forçar a instalação e lock dos pacotes da série 580 do RPM Fusion
   - type: rpm-ostree
