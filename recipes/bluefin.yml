@@ -17,7 +17,7 @@ modules:
     install:
       - nvidia
     nvidia-driver: nvidia
-    base-packages:
+    packages:
       - akmod-nvidia-580xx
       - xorg-x11-drv-nvidia-580xx
       - xorg-x11-drv-nvidia-580xx-libs
