@@ -1,28 +1,24 @@
-# Ficheiro de receita personalizado para a GTX 1060
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: meu-bluefin-gtx1060
 description: Bluefin customizado com drivers NVIDIA trancados na serie 580 para GTX 1060.
 
-# Baseamos a imagem diretamente no ecossistema estável do Bluefin
+# Herdando diretamente a imagem oficial do Bluefin com drivers proprietários
 base-image: ghcr.io/projectbluefin/bluefin-nvidia
 image-version: stable
 
 modules:
-  # 1. Garante que os scripts, ujust e ferramentas do Bluefin estão ativos
-  - type: files
-
-  # 2. Forçar a instalação e lock dos pacotes da série 580 do RPM Fusion
+  # 1. Ativar os repositórios RPM Fusion necessários para o bloqueio de pacotes
   - type: rpm-ostree
-    install:
-      - xorg-x11-drv-nvidia-390xx-cuda # Caso necessite de alguma biblioteca legada, mas o foco é o kmod
     repos:
       - https://rpmfusion.org
       - https://rpmfusion.org
 
-  # 3. Executa um script para trancar a versão em tempo de build
+  # 2. Executar o script que tranca a versão do driver Nvidia na versão 580
   - type: script
     snippets:
       - |
         #!/usr/bin/env bash
         set -xe
-        # Força o dnf/rpm-ostree a ignorar atualizações de drivers Nvidia além da 580
+        # Força o sistema a ignorar atualizações de drivers Nvidia além da série 580
         echo "exclude=xorg-x11-drv-nvidia* kmod-nvidia*" >> /etc/dnf/dnf.conf
+        echo "exclude=xorg-x11-drv-nvidia* kmod-nvidia*" >> /etc/rpm-ostree.conf
