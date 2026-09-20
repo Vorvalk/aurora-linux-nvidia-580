@@ -7,15 +7,10 @@ image-version: 44
 
 modules:
   # 1. Ativate RPM Fusion for legacy
-  - type: rpm-ostree
-    repos:
-      - https://rpmfusion.org
-      - https://rpmfusion.org
-
-  # 2. Inject branch Nvidia 580xx
-  - type: akmods
-    install:
-      - nvidia
+  - type: yum-repo
+        repos:
+          - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
+          - https://mirrors.rpmfusion.org/nonfree-fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
       
   - type: rpm-ostree
     install:
