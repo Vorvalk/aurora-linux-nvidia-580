@@ -1,28 +1,30 @@
-# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-name: bluefin-legacy-nvidia-580
-description: Aurora linux system with locked Nvidia 580 driver.
+# Ficheiro de receita personalizado para a GTX 1060
+name: meu-bluefin-gtx1060
+description: Bluefin customizado com drivers NVIDIA trancados na serie 580 para GTX 1060.
 
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 44
+# Baseamos a imagem diretamente no ecossistema estável do Bluefin
+base-image: ghcr.io/projectbluefin/bluefin-nvidia
+image-version: stable
 
 modules:
-  # 1. Ativate RPM Fusion for legacy
-  - type: yum-repo
-        repos:
-          - https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm
-          - https://mirrors.rpmfusion.org/nonfree-fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+  # 1. Garante que os scripts, ujust e ferramentas do Bluefin estão ativos
+  - type: files
+    files:
+      - usr: /usr
 
-  # 2. Inject branch Nvidia 580xx
-  - type: akmods
-    install:
-      - nvidia
-      
+  # 2. Forçar a instalação e lock dos pacotes da série 580 do RPM Fusion
   - type: rpm-ostree
     install:
-      - akmod-nvidia-580xx
-      - xorg-x11-drv-nvidia-580xx
-      - xorg-x11-drv-nvidia-580xx-libs
+      - xorg-x11-drv-nvidia-390xx-cuda # Caso necessite de alguma biblioteca legada, mas o foco é o kmod
+    repos:
+      - https://rpmfusion.org
+      - https://rpmfusion.org
 
-  # 3. Include uBlue tools
-  - type: default-flatpaks
-  - type: signing
+  # 3. Executa um script para trancar a versão em tempo de build
+  - type: script
+    snippets:
+      - |
+        #!/usr/bin/env bash
+        set -xe
+        # Força o dnf/rpm-ostree a ignorar atualizações de drivers Nvidia além da 580
+        echo "exclude=xorg-x11-drv-nvidia* kmod-nvidia*" >> /etc/dnf/dnf.conf
