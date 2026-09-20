@@ -16,8 +16,9 @@ modules:
   - type: akmods
     install:
       - nvidia
-    nvidia-driver: nvidia
-    packages:
+      
+  - type: rpm-ostree
+    install:
       - akmod-nvidia-580xx
       - xorg-x11-drv-nvidia-580xx
       - xorg-x11-drv-nvidia-580xx-libs
